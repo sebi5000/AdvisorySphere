@@ -1,0 +1,29 @@
+package project_request
+
+import(
+    "strconv"
+    "sphere/cmd/model"
+)
+
+templ ProjectMatchTable(matches []model.Match) {
+    <table class="striped">
+        <thead>
+            <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Match %</th>
+            <th scope="col">Verfügbarkeit %</th>
+            <th scope="col">Verfügbarkeit Engpass</th>
+            </tr>
+        </thead>
+        <tbody>
+            for _, match := range matches {
+                <tr>
+                <th scope="row">{ match.Name }</th>
+                <td>{ strconv.Itoa(match.Score) } %</td>
+                <td>{ strconv.Itoa(match.Availability) } %</td>
+                <td>{ match.AvailabilityConcerns }</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,12 @@
+package employee_search
+
+templ EmployeeSearch() {
+    <input type="search" name="search" placeholder="Suchen" aria-label="Search" autocomplete="off"
+        hx-get="/employee_search"
+        hx-trigger="input delay:500ms changed"
+        hx-target="#employee_result"
+        hx-swap="innerHTML" />
+
+    <div id="employee_result">
+    </div>
+}

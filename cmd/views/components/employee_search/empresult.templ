@@ -1,0 +1,30 @@
+package employee_search
+
+import(
+    "strconv"
+)
+
+templ EmployeeResult(value int){
+    <table class="striped">
+        <thead>
+            <tr>
+            <th scope="col">Vorname</th>
+            <th scope="col">Nachname</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <th scope="row">Max</th>
+            <td>Mustermann: { strconv.Itoa(value) }</td>
+            </tr>
+            <tr>
+            <th scope="row">Markus</th>
+            <td>Mustermann</td>
+            </tr>
+            <tr>
+            <th scope="row">Sabine</th>
+            <td>Musterfrau</td>
+            </tr>
+        </tbody>
+    </table>
+}

@@ -1,0 +1,23 @@
+package project_request
+
+templ ProjectRequest() {
+    <div class="grid" x-data="{ submitStatus: false }">
+        <div>
+            <form id="project_request" hx-post="project_request" hx-trigger="submit" hx-target="#project_match" x-on:submit="submitStatus = false">
+                <fieldset>
+                    <label>
+                        Projektbeschreibung
+                        <textarea name="description" placeholder="Beschreibung" autocomplete="off" aria-label="Project Description" maxlength="300" minlength="20" 
+                            x-on:input="submitStatus = $el.value.length >= 20"
+                        />
+                    </label>
+                </fieldset>
+                <input type="submit" value="Match" form="project_request" x-bind:disabled="!submitStatus" />
+            </form>
+        </div>
+        <div>
+            <div id="project_match">
+            </div>
+        </div>
+    </div>
+}

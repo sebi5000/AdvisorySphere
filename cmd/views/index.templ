@@ -1,0 +1,24 @@
+package views
+
+import "sphere/cmd/views/components/external_profile"
+
+import(
+    "sphere/cmd/views/components"
+    "sphere/cmd/views/components/project_request"
+)
+
+templ Index() {
+    <!DOCTYPE html>
+    <html lang="de">
+    @components.Header()
+        <body style="padding:0.5em">
+        @components.Nav()
+            <main class="container-fluid">
+                <!--@employee_search.EmployeeSearch()-->
+                @project_request.ProjectRequest()
+                <hr>
+                @external_profile.ExternalProfile()
+            </main>
+        </body>
+    </html>
+}
