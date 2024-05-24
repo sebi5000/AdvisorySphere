@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"net/http"
 	"sphere/cmd/model"
 	"sphere/cmd/views"
@@ -38,4 +39,14 @@ func projectRequestHandler(w http.ResponseWriter, r *http.Request) {
 
 	var matches = []model.Match{match, match2}
 	templ.Handler(project_request.ProjectMatchTable(matches)).ServeHTTP(w, r)
+}
+
+func toPDFHandler(w http.ResponseWriter, r *http.Request) {
+
+	var buffer bytes.Buffer
+
+	//TODO: Replace nil with relevant data
+	templ.Handler(project_request.ProjectMatchTable(nil)).Component.Render(r.Context(), &buffer)
+
+	//TODO: Create PDF with Gotenberg and create HTML Template to Show PDF
 }
