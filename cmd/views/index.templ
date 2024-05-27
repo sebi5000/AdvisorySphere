@@ -1,7 +1,5 @@
 package views
 
-import "sphere/cmd/views/components/external_profile"
-
 import(
     "sphere/cmd/views/components"
     "sphere/cmd/views/components/project_request"
@@ -14,10 +12,10 @@ templ Index() {
         <body style="padding:0.5em">
         @components.Nav()
             <main class="container-fluid">
-                <!--@employee_search.EmployeeSearch()-->
                 @project_request.ProjectRequest()
                 <hr>
-                @external_profile.ExternalProfile()
+                <div id="externalProfile" class="container">
+                </div>                
             </main>
         </body>
     </html>

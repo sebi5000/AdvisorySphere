@@ -13,5 +13,8 @@ func main() {
 	//router.Get("/employee_search", employeeSearchHandler)
 
 	router.Post("/project_request", projectRequestHandler)
-	http.ListenAndServe(":3000", router)
+	router.Get("/showExternalProfile", showExternalProfile)
+	router.Post("/downloadExternalProfile", downloadExternalProfile)
+
+	http.ListenAndServe(":8000", router)
 }

@@ -9,6 +9,7 @@ templ ProjectMatchTable(matches []model.Match) {
     <table class="striped">
         <thead>
             <tr>
+            <th scope="col"></th>
             <th scope="col">Name</th>
             <th scope="col">Match %</th>
             <th scope="col">Verfügbarkeit %</th>
@@ -18,7 +19,14 @@ templ ProjectMatchTable(matches []model.Match) {
         <tbody>
             for _, match := range matches {
                 <tr>
-                <th scope="row">{ match.Name }</th>
+                <th scope="row">
+                    <div>
+                        <input name="employeeNumber" type="hidden" value={match.Name} />
+                        <button hx-get="/showExternalProfile" hx-target="#externalProfile" hx-include="closest tr">Anzeigen</button>
+                        <button hx-post="/downloadExternalProfile">Download</button>
+                    </div>
+                </th>
+                <td>{ match.Name }</td>
                 <td>{ strconv.Itoa(match.Score) } %</td>
                 <td>{ strconv.Itoa(match.Availability) } %</td>
                 <td>{ match.AvailabilityConcerns }</td>

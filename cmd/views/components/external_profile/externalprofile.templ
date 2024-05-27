@@ -1,48 +1,50 @@
 package external_profile
 
-templ ExternalProfile() {
-  
-    <button>ToPDF</button>
+import (
+    "strconv"
+    "sphere/cmd/model"
+)
+
+templ ExternalProfile(profile model.Profile) {
     <div>
         <div class="row">
             <div class="col-xs">
-                <img src="https://source.unsplash.com/mann-tragt-henley-top-portrat-7YVZYZeITc8" width="200"/>
+                <img src="{ profile.Employee.PicturePath }" width="200"/>
             </div>
             <div class="col-lg">
-                <b>Max Mustermann</b>
-                <p><small>Senior Consultant Salesforce</small></p>
-                <p>Max Mustermann hat sein Studium der Wirtschaftsinformatik 2015 mit dem Master beendet und berät seit diesem Zeitpunkt
-                seine Kunden im Umfeld von Salesforce. Max hat maßgeblich die Digitalisierung im deutschen Mittelstand vorangetrieben
-                und in den letzten Jahren zahlreiche Kunden mit Hauptsitz in Deutschland bei internationalen Rollouts beraten und begleitet.</p>
+                <b>{ profile.Employee.Name }</b>
+                <p><small>{ profile.Employee.Role }</small></p>
+                <p>{ profile.Employee.Bio }</p>
                 <blockquote>
-                    "Max hat uns mit seiner Performance wirklich vorangebracht. Neben bester Qualität, hat es vor allem menschlich sofort gepasst."
-                <footer><cite>- Rene Rakete von Musterfirma GmbH</cite></footer>
+                    { profile.CustomerVoice.Voice }
+                <footer><cite>- { profile.CustomerVoice.Contact } von { profile.CustomerVoice.Company }</cite></footer>
                 </blockquote>
             </div>
             <div class="col-lg">
                 <b>Ausgewählte Projekte:</b>
-                <p>Chemieindustrie - 12 Monate - Einführung Salesforce Sales Cloud </p> 
-                <p>Hier steht eine Beschreibung des Projektinhaltes, welche durchaus meherere Zeilen haben kann und die Tätigkeiten während des Projektes beschreibt</p>
-                <hr>
-                <p>Retail - 18 Monate - Integration Salesforce & SAP </p> 
-                <p>Hier steht eine Beschreibung des Projektinhaltes, welche durchaus meherere Zeilen haben kann und die Tätigkeiten während des Projektes beschreibt und
-                diese Beschreibung ist nochmal länger, um die ganze Besonderheit des Projektes zu betonen</p>
+
+                for _, project := range profile.Projects {
+                    <p>{ project.Industry } - { strconv.Itoa(project.DurationMonth) } Monate - { project.Title } </p> 
+                    <p>{ project.Description }</p>
+                    <hr>
+                }
             </div>
         </div>
         <div class="row">
             <div class="col-xs">
-                <b>Zertifizierungen:</b>
+                <b>Zertifizierungen:</b>                
                 <ul>
-                    <li>Salesforce Administrator</li>
-                    <li>Salesforce Sales Cloud Consultant</li>
-                    <li>Salesforce AI Practioner</li>
+                    for _, certificate := range profile.Certificates {
+                        <li>{ certificate.Name }</li>
+                    }
                 </ul>
             </div>
             <div class="col-lg">
                 <b>Spezialisierung:</b>
                 <ul>
-                    <li>Sales Cloud</li>
-                    <li>Business Analyse und Prozessdesign</li>
+                    for _, specialKnowledge := range profile.SpecialKnowledges {
+                        <li>{ specialKnowledge.Name }</li>
+                    }
                 </ul>
             </div>
             <div class="col-lg" />
