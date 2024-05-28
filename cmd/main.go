@@ -13,8 +13,9 @@ func main() {
 	//router.Get("/employee_search", employeeSearchHandler)
 
 	router.Post("/project_request", projectRequestHandler)
-	router.Get("/showExternalProfile", showExternalProfile)
-	router.Post("/downloadExternalProfile", downloadExternalProfile)
+	router.Get("/showExternalProfile", showExternalProfileHandler)
+	router.Post("/downloadExternalProfile", downloadExternalProfileHandler)
+	router.Post("/aigenerateProfile", aigenerateHandler)
 
 	http.ListenAndServe(":8000", router)
 }

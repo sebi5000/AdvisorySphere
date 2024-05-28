@@ -46,14 +46,14 @@ func ProjectMatchTable(matches []model.Match) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <button hx-get=\"/showExternalProfile\" hx-target=\"#externalProfile\" hx-include=\"closest tr\">Anzeigen</button> <button hx-post=\"/downloadExternalProfile\">Download</button></div></th><td>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div class=\"grid\" role=\"group\"><button hx-get=\"/showExternalProfile\" hx-target=\"#externalProfile\" hx-include=\"closest tr\"><span class=\"fa-solid fa-eye\"></span></button> <button hx-post=\"/aigenerateProfile\" hx-target=\"#externalProfile\" hx-include=\"closest tr\"><span class=\"fa-solid fa-wand-magic-sparkles\"></span></button> <button hx-post=\"/downloadExternalProfile\" hx-include=\"closest tr\" hx-swap=\"none\"><span class=\"fa-solid fa-download\"></span></button></div></div></th><td>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(match.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/views/components/project_request/projectmatchtable.templ`, Line: 29, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/views/components/project_request/projectmatchtable.templ`, Line: 38, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -66,7 +66,7 @@ func ProjectMatchTable(matches []model.Match) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(match.Score))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/views/components/project_request/projectmatchtable.templ`, Line: 30, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/views/components/project_request/projectmatchtable.templ`, Line: 39, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -79,7 +79,7 @@ func ProjectMatchTable(matches []model.Match) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(match.Availability))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/views/components/project_request/projectmatchtable.templ`, Line: 31, Col: 54}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/views/components/project_request/projectmatchtable.templ`, Line: 40, Col: 54}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -92,7 +92,7 @@ func ProjectMatchTable(matches []model.Match) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(match.AvailabilityConcerns)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/views/components/project_request/projectmatchtable.templ`, Line: 32, Col: 48}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/views/components/project_request/projectmatchtable.templ`, Line: 41, Col: 48}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {

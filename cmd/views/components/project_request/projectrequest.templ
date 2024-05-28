@@ -1,23 +1,42 @@
 package project_request
 
 templ ProjectRequest() {
-    <div class="grid" x-data="{ submitStatus: false }">
-        <div>
-            <form id="project_request" hx-post="project_request" hx-trigger="submit" hx-target="#project_match" x-on:submit="submitStatus = false">
-                <fieldset>
-                    <label>
-                        Projektbeschreibung
-                        <textarea name="description" placeholder="Beschreibung" autocomplete="off" aria-label="Project Description" maxlength="300" minlength="20" 
-                            x-on:input="submitStatus = $el.value.length >= 20"
-                        />
-                    </label>
-                </fieldset>
-                <input type="submit" value="Match" form="project_request" x-bind:disabled="!submitStatus" />
-            </form>
-        </div>
-        <div>
-            <div id="project_match">
+    <div class="row">
+        <div class="col-sm-4" x-data="{ submitStatus: false, clearStatus: false }">
+            <div class="box">
+                <form id="project_request" hx-post="project_request" hx-trigger="submit" hx-target="#project_match" x-on:submit="submitStatus = false">
+                    <fieldset>
+                        <label>
+                            Projektbeschreibung
+                            <textarea name="description" placeholder="Beschreibung" autocomplete="off" aria-label="Project Description" maxlength="300" minlength="20" 
+                                x-on:input="submitStatus = $el.value.length >= 20; clearStatus = $el.value.length >= 1" x-ref="description"
+                            />
+                        </label>
+                    </fieldset>
+                    <div class="grid">
+                        <div>
+                            <button type="submit" value="Match" form="project_request" x-bind:disabled="!submitStatus">
+                                Match
+                                <span class="fa-solid fa-magnifying-glass" />
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" x-on:click="$refs.description.value = ''" x-bind:disabled="!clearStatus">
+                                Clear
+                                <span class="fa-solid fa-eraser" />
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
+        <div class="col-lg-8">
+            <div class="box">
+                <div id="project_match">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="externalProfile">
     </div>
 }

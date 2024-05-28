@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"net/http"
 	"sphere/cmd/model"
@@ -16,11 +15,6 @@ import (
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(views.Index()).ServeHTTP(w, r)
 }
-
-/*func employeeSearchHandler(w http.ResponseWriter, r *http.Request) {
-	var employee = rand.IntN(1000)
-	templ.Handler(employee_search.EmployeeResult(employee)).ServeHTTP(w, r)
-}*/
 
 func projectRequestHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
@@ -44,40 +38,37 @@ func projectRequestHandler(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(project_request.ProjectMatchTable(matches)).ServeHTTP(w, r)
 }
 
-func showExternalProfile(w http.ResponseWriter, r *http.Request) {
+func showExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 	employeeNumber := r.URL.Query().Get("employeeNumber")
-	fmt.Println(employeeNumber)
 
 	var ps services.ProfileService
-	var profile = ps.GetProfile("12345")
+	var profile = ps.GetProfile(employeeNumber)
 
 	templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)
 }
 
-func downloadExternalProfile(w http.ResponseWriter, r *http.Request) {
+func aigenerateHandler(w http.ResponseWriter, r *http.Request) {
+
+	employeeNumber := r.URL.Query().Get("employeeNumber")
+
 	var ps services.ProfileService
-	var profile = ps.GetProfile("12345")
+	profile := ps.GetProfile(employeeNumber)
+	description := "HIER EINE BEISPIELHAFTE PROJEKTBESCHREIBUNG EINFÜGEN, BIS DIE VOM FRONTEND ÜBERNOMMEN WIRD."
+	ps.AIGenerate(description, &profile)
 
-	var htmlContent bytes.Buffer
-	external_profile.ExternalProfile(profile).Render(r.Context(), &htmlContent)
+	templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)
+}
 
-	w.Header().Set("Content-Disposition", "attachment; filename=profile.pdf")
-	w.Header().Set("Content-Type", r.Header.Get("Content-Type"))
+func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 
-	/*var buffer bytes.Buffer
+	employeeNumber := r.URL.Query().Get("employeeNumber")
 
-	//TODO: Create PDF with Gotenberg and create HTML Template to Show PDF
-	gclient := &gotenberg.Client{Hostname: "http://localhost:3000"}
+	var ps services.ProfileService
+	profile := ps.GetProfile(employeeNumber)
+	err := ps.Download(profile)
 
-	profile, _ := gotenberg.NewDocumentFromString("profile.html", "<html><h1>Wurst!</h1></html>")
-
-	req := gotenberg.NewHTMLRequest(profile)
-	req.PaperSize(gotenberg.A4)
-	req.Landscape(true)
-	req.Margins(gotenberg.NoMargins)
-	req.SkipNetworkIdleEvent()
-	//resp, err := gclient.Post(req)
-
-	err := gclient.Store(req, "/Users/sebastianessling/Downloads/test.pdf")*/
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }

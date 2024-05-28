@@ -10,13 +10,14 @@ templ Index() {
     <html lang="de">
     @components.Header()
         <body style="padding:0.5em">
-        @components.Nav()
-            <main class="container-fluid">
+            <header>
+            @components.Nav()
+            </header>
+            <main class="container-fluid">       
                 @project_request.ProjectRequest()
-                <hr>
-                <div id="externalProfile" class="container">
-                </div>                
             </main>
+            <footer>
+            </footer>
         </body>
     </html>
 }
