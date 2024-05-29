@@ -72,3 +72,7 @@ func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 	}
 }
+
+func clearHandler(w http.ResponseWriter, r *http.Request) {
+	templ.Handler(views.Index()).ServeHTTP(w, r)
+}

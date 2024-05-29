@@ -16,6 +16,7 @@ func main() {
 	router.Get("/showExternalProfile", showExternalProfileHandler)
 	router.Post("/downloadExternalProfile", downloadExternalProfileHandler)
 	router.Post("/aigenerateProfile", aigenerateHandler)
+	router.Post("/project_clear", clearHandler)
 
 	http.ListenAndServe(":8000", router)
 }

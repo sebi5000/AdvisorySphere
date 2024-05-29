@@ -1,6 +1,11 @@
 package project_request
 
 templ ProjectRequest() {
+    <script>
+        function readyToClear() {
+            return document.getElementById('description').value.length === 0
+        }
+    </script>
     <div class="row">
         <div class="col-sm-4" x-data="{ submitStatus: false, clearStatus: false }">
             <div class="box">
@@ -8,8 +13,9 @@ templ ProjectRequest() {
                     <fieldset>
                         <label>
                             Projektbeschreibung
-                            <textarea name="description" placeholder="Beschreibung" autocomplete="off" aria-label="Project Description" maxlength="300" minlength="20" 
+                            <textarea id="description" name="description" placeholder="Beschreibung" autocomplete="off" aria-label="Project Description" maxlength="300" minlength="20" 
                                 x-on:input="submitStatus = $el.value.length >= 20; clearStatus = $el.value.length >= 1" x-ref="description"
+                                hx-post="project_clear" hx-trigger="input[readyToClear()]" hx-target="#profile" hx-swap="outerHTML"
                             />
                         </label>
                     </fieldset>
