@@ -16,6 +16,10 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(views.Index()).ServeHTTP(w, r)
 }
 
+func clearHandler(w http.ResponseWriter, r *http.Request) {
+	templ.Handler(project_request.ProjectRequest()).ServeHTTP(w, r)
+}
+
 func projectRequestHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	//description := r.Form.Get("description")
@@ -71,8 +75,4 @@ func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-}
-
-func clearHandler(w http.ResponseWriter, r *http.Request) {
-	templ.Handler(views.Index()).ServeHTTP(w, r)
 }

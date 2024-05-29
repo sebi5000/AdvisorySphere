@@ -15,7 +15,7 @@ templ ProjectRequest() {
                             Projektbeschreibung
                             <textarea id="description" name="description" placeholder="Beschreibung" autocomplete="off" aria-label="Project Description" maxlength="300" minlength="20" 
                                 x-on:input="submitStatus = $el.value.length >= 20; clearStatus = $el.value.length >= 1" x-ref="description"
-                                hx-post="project_clear" hx-trigger="input[readyToClear()]" hx-target="#profile" hx-swap="outerHTML"
+                                hx-post="project_clear" hx-trigger="input[readyToClear()]" hx-target="#profile" hx-swap="innerHTML"
                             />
                         </label>
                     </fieldset>
@@ -27,7 +27,7 @@ templ ProjectRequest() {
                             </button>
                         </div>
                         <div>
-                            <button type="button" x-on:click="$refs.description.value = ''" x-bind:disabled="!clearStatus">
+                            <button type="button" x-on:click="$refs.description.value = ''" x-bind:disabled="!clearStatus" hx-post="project_clear" hx-trigger="click" hx-target="#profile" hx-swap="innerHTML">
                                 Clear
                                 <span class="fa-solid fa-eraser" />
                             </button>
