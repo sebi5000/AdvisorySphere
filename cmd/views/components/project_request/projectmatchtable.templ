@@ -21,7 +21,7 @@ templ ProjectMatchTable(matches []model.Match) {
                 <tr>
                 <th scope="row">
                     <div>
-                        <input name="employeeNumber" type="hidden" value={match.Name} />
+                        <input name="peopleNumber" type="hidden" value={match.People.Id} />
                         <div class="grid" role="group">
                             <button hx-get="/showExternalProfile" hx-target="#externalProfile" hx-include="closest tr">
                                 <span class="fa-solid fa-eye" />
@@ -35,7 +35,7 @@ templ ProjectMatchTable(matches []model.Match) {
                         </div>
                     </div>
                 </th>
-                <td>{ match.Name }</td>
+                <td>{ match.People.Name }</td>
                 <td>{ strconv.Itoa(match.Score) } %</td>
                 <td>{ strconv.Itoa(match.Availability) } %</td>
                 <td>{ match.AvailabilityConcerns }</td>

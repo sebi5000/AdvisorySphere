@@ -1,7 +1,7 @@
 package model
 
 type Match struct {
-	Name                 string
+	People               People
 	Score                int
 	Availability         int
 	AvailabilityConcerns string

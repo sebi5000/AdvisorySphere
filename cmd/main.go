@@ -1,21 +1,23 @@
 package main
 
 import (
+	//"net/http"
+
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
 func main() {
+
 	router := chi.NewRouter()
 
 	router.Get("/", indexHandler)
-	//router.Get("/employee_search", employeeSearchHandler)
+	router.Get("/showExternalProfile", showExternalProfileHandler)
 
 	router.Post("/project_request", projectRequestHandler)
-	router.Get("/showExternalProfile", showExternalProfileHandler)
 	router.Post("/downloadExternalProfile", downloadExternalProfileHandler)
-	router.Post("/aigenerateProfile", aigenerateHandler)
+	router.Post("/aigenerateProfile", aibeautifyHandler)
 	router.Post("/project_clear", clearHandler)
 
 	http.ListenAndServe(":8000", router)

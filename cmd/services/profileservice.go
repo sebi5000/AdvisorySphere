@@ -13,11 +13,11 @@ import (
 type ProfileService struct {
 }
 
-func (ps ProfileService) GetProfile(employeeNumber string) model.Profile {
+func (ps ProfileService) GetProfile(peopleNumber string) model.Profile {
 
 	var profile model.Profile
 
-	var employee model.Employee
+	var employee model.People
 	employee.Id = "12345"
 	employee.Name = "Max Mustermann"
 	employee.Role = "SAP Senior Consultant"
@@ -26,7 +26,7 @@ func (ps ProfileService) GetProfile(employeeNumber string) model.Profile {
 	seine Kunden im Umfeld von Salesforce. Max hat maßgeblich die Digitalisierung im deutschen Mittelstand vorangetrieben
 	und in den letzten Jahren zahlreiche Kunden mit Hauptsitz in Deutschland bei internationalen Rollouts beraten und begleitet.`
 
-	profile.Employee = employee
+	profile.People = employee
 
 	var customerVoice model.CustomerVoice
 	customerVoice.Company = "Musterfirma GmbH"
@@ -73,50 +73,75 @@ func (ps ProfileService) GetProfile(employeeNumber string) model.Profile {
 	return profile
 }
 
-func (ps ProfileService) AIGenerate(projectDescription string, profile *model.Profile) error {
+func (ps ProfileService) GetProfilePDF(peopleNumber string) ([]byte, error) {
+
+	var pdfDocument []byte
+	gclient := &gotenberg.Client{Hostname: "http://localhost:3000"}
+
+	profile := ps.GetProfile(peopleNumber)
+	req, err := ps.profileAsGrotenbergRequest(profile)
+
+	if err != nil {
+		return pdfDocument, err
+	}
+
+	resp, err := gclient.Post(req)
+
+	if err != nil {
+		return pdfDocument, err
+	}
+
+	code, err := resp.Body.Read(pdfDocument)
+	_ = code
+
+	return pdfDocument, err
+}
+
+func (ps ProfileService) AIBeautify(projectDescription string, profile *model.Profile) error {
 
 	return errors.New("TODO: Implement Method")
 }
 
 func (ps ProfileService) Download(profile model.Profile) error {
 
-	//Build HTML-String with Content from TEMPL and apply stylesheet
-	var htmlContent strings.Builder
-	htmlContent.WriteString(`<html><head>
-									 <link rel="stylesheet" href="picostyle.css"/>
-									 <link rel="stylesheet" href="flexboxstyle.css"/>
-								 </head><body>`)
-
-	external_profile.ExternalProfile(profile).Render(context.TODO(), &htmlContent)
-	htmlContent.WriteString(`</body></html>`)
-
 	gclient := &gotenberg.Client{Hostname: "http://localhost:3000"}
-	profilePDF, err := gotenberg.NewDocumentFromString("profile.html", htmlContent.String())
+	req, err := ps.profileAsGrotenbergRequest(profile)
 
 	if err != nil {
 		return err
+	}
+
+	err = gclient.Store(req, "/Users/sebastianessling/Downloads/test.pdf")
+
+	return err
+}
+
+func (ps ProfileService) profileAsGrotenbergRequest(profile model.Profile) (*gotenberg.HTMLRequest, error) {
+
+	var req *gotenberg.HTMLRequest
+
+	//Build HTML-String with Content from TEMPL and apply stylesheet
+	var htmlContent strings.Builder
+
+	external_profile.ExternalProfilePDF(profile).Render(context.TODO(), &htmlContent)
+	profilePDF, err := gotenberg.NewDocumentFromString("profile.html", htmlContent.String())
+
+	if err != nil {
+		return req, err
 	}
 
 	picoStyle, err := gotenberg.NewDocumentFromPath("picostyle.css", "/Users/sebastianessling/Documents/AdvisorySphere/assets/pico.min.css")
 
 	if err != nil {
-		return err
+		return req, err
 	}
 
-	flexboxStyle, err := gotenberg.NewDocumentFromPath("flexboxstyle.css", "/Users/sebastianessling/Documents/AdvisorySphere/assets/flexboxgrid.min.css")
-
-	if err != nil {
-		return err
-	}
-
-	req := gotenberg.NewHTMLRequest(profilePDF)
-	req.Assets(picoStyle, flexboxStyle)
-	req.PaperSize(gotenberg.A3)
+	req = gotenberg.NewHTMLRequest(profilePDF)
+	req.Assets(picoStyle)
+	req.PaperSize(gotenberg.PaperDimensions{5.625, 10, gotenberg.IN}) //16:9 Ratio like Powerpoint
 	req.Landscape(true)
-	req.Margins(gotenberg.NoMargins)
+	req.Margins(gotenberg.PageMargins{0.2, 0.2, 0.2, 0.2, gotenberg.IN})
 	req.SkipNetworkIdleEvent()
 
-	err = gclient.Store(req, "/Users/sebastianessling/Downloads/test.pdf")
-
-	return err
+	return req, err
 }

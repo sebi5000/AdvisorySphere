@@ -1,14 +1,14 @@
 package model
 
 type Profile struct {
-	Employee          Employee
+	People            People
 	Certificates      []Certificate
 	SpecialKnowledges []SpecialKnowledge
 	CustomerVoice     CustomerVoice
 	Projects          []Project
 }
 
-type Employee struct {
+type People struct {
 	Id          string
 	Name        string
 	PicturePath string
