@@ -130,14 +130,14 @@ func (ps ProfileService) profileAsGrotenbergRequest(profile model.Profile) (*got
 		return req, err
 	}
 
-	picoStyle, err := gotenberg.NewDocumentFromPath("picostyle.css", "/Users/sebastianessling/Documents/AdvisorySphere/assets/pico.min.css")
+	//picoStyle, err := gotenberg.NewDocumentFromPath("picostyle.css", "/Users/sebastianessling/Documents/AdvisorySphere/assets/pico.min.css")
 
 	if err != nil {
 		return req, err
 	}
 
 	req = gotenberg.NewHTMLRequest(profilePDF)
-	req.Assets(picoStyle)
+	//req.Assets(picoStyle)
 	req.PaperSize(gotenberg.PaperDimensions{5.625, 10, gotenberg.IN}) //16:9 Ratio like Powerpoint
 	req.Landscape(true)
 	req.Margins(gotenberg.PageMargins{0.2, 0.2, 0.2, 0.2, gotenberg.IN})
