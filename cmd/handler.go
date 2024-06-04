@@ -57,10 +57,15 @@ func showExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	peopleNumber := r.URL.Query().Get("peopleNumber")
+	description := r.URL.Query().Get("description")
+
+	fmt.Println(peopleNumber)
+	fmt.Println(description)
+	description = "Wer war Deutschlands erster Bundeskanzler?"
+	//TODO: Check Description for eval input or validate, that HTMX Include does HTML Sanitize
 
 	var ps services.ProfileService
 	profile := ps.GetProfile(peopleNumber)
-	description := "HIER EINE BEISPIELHAFTE PROJEKTBESCHREIBUNG EINFÜGEN, BIS DIE VOM FRONTEND ÜBERNOMMEN WIRD."
 	ps.AIBeautify(description, &profile)
 
 	//templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)

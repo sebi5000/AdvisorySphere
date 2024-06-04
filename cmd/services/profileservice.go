@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"sphere/cmd/model"
 	"sphere/cmd/views/components/external_profile"
 	"strings"
@@ -98,8 +98,11 @@ func (ps ProfileService) GetProfilePDF(peopleNumber string) ([]byte, error) {
 }
 
 func (ps ProfileService) AIBeautify(projectDescription string, profile *model.Profile) error {
+	var ai AIService
+	answer, err := ai.SendSimpleRequest(projectDescription)
 
-	return errors.New("TODO: Implement Method")
+	fmt.Println(answer)
+	return err
 }
 
 func (ps ProfileService) Download(profile model.Profile) error {
