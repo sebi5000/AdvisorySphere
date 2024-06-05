@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"sphere/cmd/model"
 	"sphere/cmd/views/components/external_profile"
 	"strings"
@@ -101,7 +100,8 @@ func (ps ProfileService) AIBeautify(projectDescription string, profile *model.Pr
 	var ai AIService
 	answer, err := ai.SendSimpleRequest(projectDescription)
 
-	fmt.Println(answer)
+	_ = answer
+
 	return err
 }
 

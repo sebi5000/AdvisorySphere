@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"os"
 
 	"github.com/sashabaranov/go-openai"
@@ -13,6 +14,10 @@ type AIService struct {
 func (aiService AIService) SendSimpleRequest(task string) (string, error) {
 
 	apiKey := os.Getenv("OPENAIKEY")
+
+	if len(apiKey) == 0 {
+		return "", errors.New("please set api-key for using ai features")
+	}
 
 	client := openai.NewClient(apiKey)
 	resp, err := client.CreateChatCompletion(context.Background(), openai.ChatCompletionRequest{
