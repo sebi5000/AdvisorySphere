@@ -11,7 +11,14 @@ templ Index() {
     @components.Header()
         <body style="padding:0.5em">
             <header>
-            @components.Nav()
+                @components.Nav()
+                
+                <div x-data="{showFeedback: false}" x-init="$watch('showFeedback', value => value ? setTimeout(() => showFeedback = false, 2000) : '')">
+                    <div hx-get="/feedback" hx-trigger="on-feedback-send from:body" hx-swap="innerHTML" 
+                        @on-feedback-send.window="showFeedback = true" x-show="showFeedback" x-transition>
+                    </div>
+                </div>
+
             </header>
             <main class="container-fluid">
                 <div id="profile">   

@@ -1,0 +1,30 @@
+package feedback
+
+const (
+    SUCCESS int = 1
+    INFO int = 2
+    WARNING int = 3
+    ERROR int = 4
+)
+
+func getCSSClassForFeedbackType(level int) string {
+
+    switch level {
+        case SUCCESS:
+            return "pico-background-green-400"
+        case INFO:
+            return "pico-background-azure-600"
+        case WARNING:
+            return "pico-background-yellow-200"
+        case ERROR:
+            return "pico-background-red-500"
+    }
+
+    return ""
+}
+
+templ FeedbackBox(level int, feedback string) {
+    <div>
+        <article class={ getCSSClassForFeedbackType(level) }>{ feedback }</article>
+    </div>
+}

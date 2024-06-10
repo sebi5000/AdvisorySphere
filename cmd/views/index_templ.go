@@ -44,7 +44,7 @@ func Index() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</header><main class=\"container-fluid\"><div id=\"profile\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div x-data=\"{showFeedback: false}\" x-init=\"$watch(&#39;showFeedback&#39;, value =&gt; value ? setTimeout(() =&gt; showFeedback = false, 2000) : &#39;&#39;)\"><div hx-get=\"/feedback\" hx-trigger=\"on-feedback-send from:body\" hx-swap=\"innerHTML\" @on-feedback-send.window=\"showFeedback = true\" x-show=\"showFeedback\" x-transition></div></div></header><main class=\"container-fluid\"><div id=\"profile\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

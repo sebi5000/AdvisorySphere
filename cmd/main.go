@@ -11,6 +11,7 @@ func main() {
 
 	router.Get("/", indexHandler)
 	router.Get("/showExternalProfile", showExternalProfileHandler)
+	router.Get("/feedback", feedbackHandler)
 
 	router.Post("/project_request", projectRequestHandler)
 	router.Post("/downloadExternalProfile", downloadExternalProfileHandler)
