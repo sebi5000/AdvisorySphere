@@ -12,7 +12,6 @@ type AIService struct {
 }
 
 func (aiService AIService) SendSimpleRequest(task string) (string, error) {
-
 	apiKey := os.Getenv("OPENAIKEY")
 
 	if len(apiKey) == 0 {

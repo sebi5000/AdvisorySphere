@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"sphere/cmd/model"
+	"sphere/cmd/model/status"
 	"sphere/cmd/services"
 	"sphere/cmd/views"
 	"sphere/cmd/views/components/external_profile"
-	"sphere/cmd/views/components/feedback"
 	"sphere/cmd/views/components/project_request"
 
 	"github.com/a-h/templ"
@@ -15,10 +15,6 @@ import (
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(views.Index()).ServeHTTP(w, r)
-}
-
-func feedbackHandler(w http.ResponseWriter, r *http.Request) {
-	templ.Handler(feedback.FeedbackBox(1, "Yes!!!!")).ServeHTTP(w, r)
 }
 
 //--- PROJECT MATCH FINDING HANDLERS ---
@@ -46,7 +42,6 @@ func projectRequestHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func clearHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("HX-Trigger", "on-feedback-send")
 	templ.Handler(project_request.ProjectRequest()).ServeHTTP(w, r)
 }
 
@@ -77,7 +72,8 @@ func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		//templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)
 	} else {
-		//SET ERROR PAGE
+		status := status.Danger(err.Error())
+		status.SetHXTriggerHeader(w)
 	}
 }
 
@@ -90,6 +86,7 @@ func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 	err := ps.Download(profile)
 
 	if err != nil {
-		fmt.Println(err.Error())
+		status := status.Danger(err.Error())
+		status.SetHXTriggerHeader(w)
 	}
 }

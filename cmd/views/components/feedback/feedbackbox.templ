@@ -1,30 +1,32 @@
 package feedback
 
-const (
-    SUCCESS int = 1
-    INFO int = 2
-    WARNING int = 3
-    ERROR int = 4
-)
+templ FeedbackBox() {
 
-func getCSSClassForFeedbackType(level int) string {
+    <script type="text/javascript">
+        
+        function getCSSClassForFeedbackType(level){
+            
+            switch (level) {
+                case "success":
+                    return "pico-background-green-400";
+                case "info":
+                    return "pico-background-azure-600";
+                case "warning":
+                    return "pico-background-yellow-200";
+                case "danger":
+                    return "pico-background-red-500";
+            }
 
-    switch level {
-        case SUCCESS:
-            return "pico-background-green-400"
-        case INFO:
-            return "pico-background-azure-600"
-        case WARNING:
-            return "pico-background-yellow-200"
-        case ERROR:
-            return "pico-background-red-500"
-    }
+            return "";
+        }
+        
+    </script>
 
-    return ""
-}
-
-templ FeedbackBox(level int, feedback string) {
-    <div>
-        <article class={ getCSSClassForFeedbackType(level) }>{ feedback }</article>
+    <div x-data="{level: '', message: ''}" @onStatusChanged.window="level = $event.detail.level; message = $event.detail.message; setTimeout(() => { level = '' }, 3000)">
+        <div x-show="level != ''">
+            <article :class="getCSSClassForFeedbackType(level)">    
+                <p x-text="message"></p>
+            </article>
+        </div>
     </div>
 }

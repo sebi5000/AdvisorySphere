@@ -1,5 +1,7 @@
 package views
 
+import "sphere/cmd/views/components/feedback"
+
 import(
     "sphere/cmd/views/components"
     "sphere/cmd/views/components/project_request"
@@ -13,12 +15,8 @@ templ Index() {
             <header>
                 @components.Nav()
                 
-                <div x-data="{showFeedback: false}" x-init="$watch('showFeedback', value => value ? setTimeout(() => showFeedback = false, 2000) : '')">
-                    <div hx-get="/feedback" hx-trigger="on-feedback-send from:body" hx-swap="innerHTML" 
-                        @on-feedback-send.window="showFeedback = true" x-show="showFeedback" x-transition>
-                    </div>
-                </div>
-
+                <!-- Show Status Messages like errors, warnings... Fire event onstatuschanged from backend (see status.go) -->
+                @feedback.FeedbackBox()
             </header>
             <main class="container-fluid">
                 <div id="profile">   
