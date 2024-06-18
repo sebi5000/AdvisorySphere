@@ -6,6 +6,7 @@ import(
 )
 
 templ ProjectMatchTable(matches []model.Match) {
+       
     <table class="striped">
         <thead>
             <tr>
@@ -19,26 +20,26 @@ templ ProjectMatchTable(matches []model.Match) {
         <tbody>
             for _, match := range matches {
                 <tr>
-                <th scope="row">
-                    <div>
-                        <input name="peopleNumber" type="hidden" value={match.People.Id} />
-                        <div class="grid" role="group">
-                            <button hx-get="/showExternalProfile" hx-target="#externalProfile" hx-include="closest tr">
-                                <span class="fa-solid fa-eye" />
-                            </button>
-                            <button hx-post="/aigenerateProfile" hx-target="#externalProfile" hx-include="closest tr">
-                                <span class="fa-solid fa-wand-magic-sparkles" />
-                            </button>
-                            <button hx-post="/downloadExternalProfile" hx-include="closest tr" hx-swap="none">
-                                <span class="fa-solid fa-download" />
-                            </button>
+                    <th scope="row">
+                        <div>
+                            <input name="peopleNumber" type="hidden" value={match.People.Id} />
+                            <div class="grid" role="group">
+                                <button hx-get="/showExternalProfile" hx-target="#externalProfile" hx-include="closest tr">
+                                    <span class="fa-solid fa-eye" />
+                                </button>
+                                <button hx-post="/aigenerateProfile" hx-target="#externalProfile" hx-include="closest tr">
+                                    <span class="fa-solid fa-wand-magic-sparkles" />
+                                </button>
+                                <button hx-post="/downloadExternalProfile" hx-include="closest tr" hx-swap="none">
+                                    <span class="fa-solid fa-download" />
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </th>
-                <td>{ match.People.Name }</td>
-                <td>{ strconv.Itoa(match.Score) } %</td>
-                <td>{ strconv.Itoa(match.Availability) } %</td>
-                <td>{ match.AvailabilityConcerns }</td>
+                    </th>
+                    <td>{ match.People.Name }</td>
+                    <td>{ strconv.Itoa(match.Score) } %</td>
+                    <td>{ strconv.Itoa(match.Availability) } %</td>
+                    <td>{ match.AvailabilityConcerns }</td>
                 </tr>
             }
         </tbody>

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"sphere/cmd/model"
 	"sphere/cmd/model/status"
@@ -59,8 +58,6 @@ func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 	peopleNumber := r.URL.Query().Get("peopleNumber")
 	description := r.URL.Query().Get("description")
 
-	fmt.Println(peopleNumber)
-	fmt.Println(description)
 	description = "Wer war Deutschlands erster Bundeskanzler?"
 	//TODO: Check Description for eval input or validate, that HTMX Include does HTML Sanitize
 
