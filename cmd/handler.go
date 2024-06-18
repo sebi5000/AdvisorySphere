@@ -20,7 +20,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func projectRequestHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	//description := r.Form.Get("description")
+	description := r.Form.Get("description")
+
+	_ = description
 
 	match := model.Match{
 		model.People{"12345", "Max Mustermann", "", "Senior SAP Consultant", "Hier steht eine Bio"},
@@ -56,10 +58,7 @@ func showExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	peopleNumber := r.URL.Query().Get("peopleNumber")
-	description := r.URL.Query().Get("description")
-
-	description = "Wer war Deutschlands erster Bundeskanzler?"
-	//TODO: Check Description for eval input or validate, that HTMX Include does HTML Sanitize
+	description := r.URL.Query().Get("corr_description")
 
 	var ps services.ProfileService
 	profile := ps.GetProfile(peopleNumber)
@@ -67,7 +66,7 @@ func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 	err := ps.AIBeautify(description, &profile)
 
 	if err == nil {
-		//templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)
+		templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)
 	} else {
 		status := status.Danger(err.Error())
 		status.SetHXTriggerHeader(w)

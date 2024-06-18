@@ -10,10 +10,10 @@ func main() {
 	router := chi.NewRouter()
 	router.Get("/", indexHandler)
 	router.Get("/showExternalProfile", showExternalProfileHandler)
+	router.Get("/aigenerateProfile", aibeautifyHandler)
+	router.Get("/downloadExternalProfile", downloadExternalProfileHandler)
 
 	router.Post("/project_request", projectRequestHandler)
-	router.Post("/downloadExternalProfile", downloadExternalProfileHandler)
-	router.Post("/aigenerateProfile", aibeautifyHandler)
 	router.Post("/project_clear", clearHandler)
 
 	http.ListenAndServe(":8000", router)
