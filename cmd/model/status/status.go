@@ -48,6 +48,12 @@ func (s Status) SetHXTriggerHeader(w http.ResponseWriter) error {
 	return err
 }
 
+func (s Status) GetHXTriggerEvent() string {
+	jsonData, err := s.jsonify()
+	_ = err
+	return jsonData
+}
+
 func (s Status) IsError() bool {
 	return s.Level == DANGER
 }

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	htmx "sphere/cmd/HTMX"
 	"sphere/cmd/model"
 	"sphere/cmd/model/status"
 	"sphere/cmd/services"
@@ -39,6 +41,8 @@ func projectRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var matches = []model.Match{match, match2}
+
+	w.Header().Set("HX-Trigger", "onmatchcompleted")
 	templ.Handler(project_request.ProjectMatchTable(matches)).ServeHTTP(w, r)
 }
 
@@ -57,20 +61,37 @@ func showExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 
+	htmxService := htmx.NewService(w)
+	htmxService.AddEvent("onaibeautifycompleted")
+
 	peopleNumber := r.URL.Query().Get("peopleNumber")
 	description := r.URL.Query().Get("corr_description")
+
+	var projectService services.ProjectService
+	request, err := projectService.CreateProjectRequestFromText(description)
+
+	fmt.Println(request.Title)
+
+	if err != nil {
+		status := status.Danger(err.Error())
+		eventData := status.GetHXTriggerEvent()
+		htmxService.AddEvent(eventData)
+		return
+	}
 
 	var ps services.ProfileService
 	profile := ps.GetProfile(peopleNumber)
 
-	err := ps.AIBeautify(description, &profile)
+	err = ps.AIBeautify(description, &profile)
 
-	if err == nil {
-		templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)
-	} else {
+	if err != nil {
 		status := status.Danger(err.Error())
-		status.SetHXTriggerHeader(w)
+		eventData := status.GetHXTriggerEvent()
+		htmxService.AddEvent(eventData)
+		return
 	}
+
+	templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)
 }
 
 func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {

@@ -17,4 +17,7 @@ func main() {
 	router.Post("/project_clear", clearHandler)
 
 	http.ListenAndServe(":8000", router)
+
+	//NEXT-STEP: REQUEST Model bauen inkl. Service, welcher mit AI aus einer Projektbeschreibung strukturierte Daten ableitet.
+	//Dann darauf das Matching optimieren und entsprechend das Profil optimal anpassen mit AI
 }

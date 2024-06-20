@@ -21,11 +21,13 @@ templ FeedbackBox() {
         }
         
     </script>
-
-    <div x-data="{level: '', message: ''}" @onStatusChanged.window="level = $event.detail.level; message = $event.detail.message; setTimeout(() => { level = '' }, 3000)">
+    <div x-data="{level: '', message: ''}" @onStatusChanged.window="level = $event.detail.level; message = $event.detail.message;">
         <div x-show="level != ''">
-            <article :class="getCSSClassForFeedbackType(level)">    
-                <p x-text="message"></p>
+            <article :class="getCSSClassForFeedbackType(level)" style="position: relative;width:50%;">
+                <div style="float: right">
+                    <span class="fa-solid fa-circle-xmark" @click="level = ''" style="cursor: pointer"/>
+                </div>
+                <p x-text="message" style="display: inline;"></p>
             </article>
         </div>
     </div>

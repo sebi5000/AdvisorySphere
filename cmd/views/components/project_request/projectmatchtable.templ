@@ -26,19 +26,20 @@ templ ProjectMatchTable(matches []model.Match) {
             for _, match := range matches {
                 <tr hx-include="closest tr">
                     <th scope="row"> 
-                        <div x-data="{description: ''}">
+                        <div x-data="{description: '', inProgress: false}">
                             <div>
                                 <input name="peopleNumber" type="hidden" value={match.People.Id} />
                                 <input name="corr_description" type="hidden" :value="description" />
                             </div>
                             <div class="grid" role="group"> 
-                                <button hx-get="/showExternalProfile" hx-target="#externalProfile">
+                                <button hx-get="/showExternalProfile" hx-target="#externalProfile" :disabled="inProgress">
                                     <span class="fa-solid fa-eye" />
                                 </button>
-                                <button hx-get="/aigenerateProfile" hx-target="#externalProfile" @click="description = getDescription()" hx-indicator="">
+                                <button hx-get="/aigenerateProfile" hx-target="#externalProfile" :aria-busy="inProgress"
+                                        @click="description = getDescription(); inProgress = true" @onAIBeautifyCompleted.window="inProgress = false" :disabled="inProgress">
                                     <span class="fa-solid fa-wand-magic-sparkles" />
                                 </button>
-                                <button hx-get="/downloadExternalProfile" hx-swap="none">
+                                <button hx-get="/downloadExternalProfile" hx-swap="none" :disabled="inProgress">
                                     <span class="fa-solid fa-download" />
                                 </button>
                             </div>

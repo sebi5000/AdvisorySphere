@@ -7,13 +7,13 @@ templ ProjectRequest() {
         }
     </script>
     <div class="row">
-        <div class="col-sm-4" x-data="{ submitStatus: false, clearStatus: false }">
+        <div class="col-sm-4" x-data="{ submitStatus: false, clearStatus: false, inProgress: false }">
             <div class="box">
-                <form id="project_request" hx-post="project_request" hx-trigger="submit" hx-target="#project_match" x-on:submit="submitStatus = false">
+                <form id="project_request" hx-post="project_request" hx-trigger="submit" hx-target="#project_match" x-on:submit="submitStatus = false; inProgress = true">
                     <fieldset>
                         <label>
                             Projektbeschreibung
-                            <textarea id="description" name="description" placeholder="Beschreibung" autocomplete="off" aria-label="Project Description" maxlength="300" minlength="20" 
+                            <textarea id="description" name="description" placeholder="Beschreibung" autocomplete="off" aria-label="Project Description" maxlength="2000" minlength="20" 
                                 x-on:input="submitStatus = $el.value.length >= 20; clearStatus = $el.value.length >= 1" x-ref="description"
                                 hx-post="project_clear" hx-trigger="input[readyToClear()]" hx-target="#profile" hx-swap="innerHTML"
                             />
@@ -21,7 +21,7 @@ templ ProjectRequest() {
                     </fieldset>
                     <div class="grid">
                         <div>
-                            <button type="submit" value="Match" form="project_request" x-bind:disabled="!submitStatus">
+                            <button type="submit" value="Match" form="project_request" :disabled="!submitStatus" :aria-busy="inProgress" @onMatchCompleted.window="inProgress = false">
                                 Match
                                 <span class="fa-solid fa-magnifying-glass" />
                             </button>
