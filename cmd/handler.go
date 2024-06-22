@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	htmx "sphere/cmd/HTMX"
 	"sphere/cmd/model"
@@ -62,7 +61,7 @@ func showExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	htmxService := htmx.NewService(w)
-	htmxService.AddEvent("onaibeautifycompleted")
+	htmxService.AddEvent(htmx.Event{Name: "onaibeautifycompleted", Param: ""})
 
 	peopleNumber := r.URL.Query().Get("peopleNumber")
 	description := r.URL.Query().Get("corr_description")
@@ -70,24 +69,20 @@ func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 	var projectService services.ProjectService
 	request, err := projectService.CreateProjectRequestFromText(description)
 
-	fmt.Println(request.Title)
-
 	if err != nil {
 		status := status.Danger(err.Error())
-		eventData := status.GetHXTriggerEvent()
-		htmxService.AddEvent(eventData)
+		htmxService.AddEvent(htmx.Event{Name: "onstatuschanged", Param: status})
 		return
 	}
 
 	var ps services.ProfileService
 	profile := ps.GetProfile(peopleNumber)
 
-	err = ps.AIBeautify(description, &profile)
+	err = ps.AIBeautify(request, &profile)
 
 	if err != nil {
 		status := status.Danger(err.Error())
-		eventData := status.GetHXTriggerEvent()
-		htmxService.AddEvent(eventData)
+		htmxService.AddEvent(htmx.Event{Name: "onstatuschanged", Param: status})
 		return
 	}
 
@@ -103,7 +98,7 @@ func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 	err := ps.Download(profile)
 
 	if err != nil {
-		status := status.Danger(err.Error())
-		status.SetHXTriggerHeader(w)
+		//status := status.Danger(err.Error())
+		//status.SetHXTriggerHeader(w)
 	}
 }

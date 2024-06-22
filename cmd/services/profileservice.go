@@ -96,7 +96,7 @@ func (ps ProfileService) GetProfilePDF(peopleNumber string) ([]byte, error) {
 	return pdfDocument, err
 }
 
-func (ps ProfileService) AIBeautify(projectDescription string, profile *model.Profile) error {
+func (ps ProfileService) AIBeautify(project model.ProjectRequest, profile *model.Profile) error {
 	var ai AIService
 
 	preprompt := `Du bist Vermittler in einer Personalvermittlung und versuchst Profile deiner Klienten, möglichst gemäß den Vorgaben der Projektbeschreibung auszuwählen.
@@ -106,7 +106,7 @@ func (ps ProfileService) AIBeautify(projectDescription string, profile *model.Pr
 	preprompt += "Du sollst nun einen Kandidaten mit folgendem Profil vermitteln:" + profile.People.Bio
 	preprompt += "Beachte, dass du die Projektbeschreibung mit der nächsten Nachricht erhälst."
 
-	answer, err := ai.SendPromptedRequest(preprompt, projectDescription)
+	answer, err := ai.SendPromptedRequest(preprompt, project.Description)
 
 	profile.People.Bio = answer
 

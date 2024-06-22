@@ -1,14 +1,18 @@
 package htmx
 
 import (
+	"encoding/json"
 	"net/http"
-	"strings"
 )
 
 type HTMXService struct {
 	ResponseWriter http.ResponseWriter
-	eventStack     []string
-	eventChain     string
+	eventStack     []Event
+}
+
+type Event struct {
+	Name  string
+	Param any
 }
 
 func NewService(w http.ResponseWriter) *HTMXService {
@@ -19,21 +23,31 @@ func NewService(w http.ResponseWriter) *HTMXService {
 	return service
 }
 
-func (hs *HTMXService) AddEvent(event string) {
+func (hs *HTMXService) AddEvent(event Event) {
 
 	hs.eventStack = append(hs.eventStack, event)
-	var eventChain string = ""
 
-	for i := range hs.eventStack {
-		eventChain += hs.eventStack[i] + ","
-	}
+	events, err := hs.jsonify()
 
-	eventChain, found := strings.CutSuffix(eventChain, ",")
-
-	hs.eventChain = eventChain
-
-	_ = found //If not found - no problem
+	_ = err
 
 	hs.ResponseWriter.Header().Del("HX-Trigger")
-	hs.ResponseWriter.Header().Set("HX-Trigger", hs.eventChain)
+	hs.ResponseWriter.Header().Set("HX-Trigger", events)
+}
+
+func (s HTMXService) jsonify() (string, error) {
+
+	eventMap := map[string]any{}
+
+	for _, event := range s.eventStack {
+		eventMap[event.Name] = event.Param
+	}
+
+	jsonData, err := json.Marshal(eventMap)
+
+	if err != nil {
+		return "", err
+	}
+
+	return string(jsonData), nil
 }

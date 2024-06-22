@@ -2,7 +2,6 @@ package status
 
 import (
 	"encoding/json"
-	"net/http"
 )
 
 const (
@@ -41,28 +40,18 @@ func (s Status) Error() string {
 	return s.Message
 }
 
-func (s Status) SetHXTriggerHeader(w http.ResponseWriter) error {
-	jsonData, err := s.jsonify()
-	w.Header().Set("HX-Trigger", jsonData)
-
-	return err
-}
-
-func (s Status) GetHXTriggerEvent() string {
-	jsonData, err := s.jsonify()
-	_ = err
-	return jsonData
-}
-
 func (s Status) IsError() bool {
 	return s.Level == DANGER
 }
 
+func (s Status) ToJSON() string {
+	json, err := s.jsonify()
+	_ = err
+	return json
+}
+
 func (s Status) jsonify() (string, error) {
-	s.Message = s.Error()
-	eventMap := map[string]Status{}
-	eventMap["onstatuschanged"] = s
-	jsonData, err := json.Marshal(eventMap)
+	jsonData, err := json.Marshal(s)
 
 	if err != nil {
 		return "", err
