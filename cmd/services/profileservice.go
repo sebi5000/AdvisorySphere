@@ -99,16 +99,40 @@ func (ps ProfileService) GetProfilePDF(peopleNumber string) ([]byte, error) {
 func (ps ProfileService) AIBeautify(project model.ProjectRequest, profile *model.Profile) error {
 	var ai AIService
 
-	preprompt := `Du bist Vermittler in einer Personalvermittlung und versuchst Profile deiner Klienten, möglichst gemäß den Vorgaben der Projektbeschreibung auszuwählen.
+	basicprompt := `Du bist Vermittler in einer Personalvermittlung und versuchst Profile deiner Klienten, möglichst gemäß den Vorgaben der Projektbeschreibung auszuwählen.
 			 		Auch bei kleinen Formulierungen achtest du auf ein Matching in Referenzen, Projekten und Spezialisierungen, sodass der Kandidat für den Kunden sehr gut
-					auf die Position passt.`
+					auf die Position passt. `
 
-	preprompt += "Du sollst nun einen Kandidaten mit folgendem Profil vermitteln:" + profile.People.Bio
-	preprompt += "Beachte, dass du die Projektbeschreibung mit der nächsten Nachricht erhälst."
+	preprompt := basicprompt + "Du sollst nun einen Kandidaten mit folgendem Profil vermitteln:" + profile.People.Bio
+	preprompt += "Beachte, dass du die Projektbeschreibung mit der nächsten Nachricht erhälst. Deine Antwort sollte nicht mehr als 50 Wörter umfassen."
 
 	answer, err := ai.SendPromptedRequest(preprompt, project.Description)
-
 	profile.People.Bio = answer
+
+	_ = err
+
+	//Special Knowledge
+
+	preprompt = basicprompt + `Liefere eine Liste von Spezialkenntnissen, die besonders gut auf die Projektbeschreibung passen. Trenne die Liste mit einem ;.
+							Ein Beispiel könnte wie folgt aussehen: Sales Cloud;Business Analyse und Prozessdesign;Führung internationaler Teams
+							Verwende maximal 3 Elemente in deiner Liste und nicht mehr als 40 Zeichen pro Element. Beachte das du die Projektbeschreibung mit der nächsten Nachricht erhälst.`
+
+	answer, err = ai.SendPromptedRequest(preprompt, project.Description)
+
+	_ = err
+
+	specialKnowledge := strings.Split(answer, ";")
+
+	var specialKnowledgeList []model.SpecialKnowledge
+
+	for _, sk := range specialKnowledge {
+		knowledge := model.SpecialKnowledge{Name: sk}
+		specialKnowledgeList = append(specialKnowledgeList, knowledge)
+	}
+
+	profile.SpecialKnowledges = specialKnowledgeList
+
+	//Customer Voice nicht mit KI ermitteln - kann später einfach aus Datenbank kommen
 
 	return err
 }

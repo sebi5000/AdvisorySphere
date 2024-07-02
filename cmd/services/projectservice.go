@@ -23,7 +23,7 @@ func (ps ProjectService) CreateProjectRequestFromText(text string) (model.Projec
 				Die Bestandteile ersetzt du dann mit den Platzhaltern im Template. Anbei die Zuordnung von Platzhaltern und Bestandteilen:
 				[TITLE] = Der Titel der Projektbeschreibung
 				[DESCRIPTION] = Der beschreibende Text des Projektes
-				[DURATION] = Die Dauer des Projekteinsatzes in Monaten. Ist diese nicht direkt angegeben, berechne Sie anhand von Start und Endedatum (Beispiel: 01.01.2024 - 01.07.2024 = 6 Monate)
+				[DURATION] = Die Dauer des Projekteinsatzes in Monaten. Ist diese nicht direkt angegeben, berechne Sie anhand von Start und Endedatum (Beispiel: 01.01.2024 - 01.07.2024 = 6 Monate). Nimm ausschließlich die Zahl in deine Antwort z.B. 6
 				[INDUSTRY] = Die Branche in der das Unternehmen tätig ist. Sollte dies nicht im Text enthalten sein, prüfe ob du es vom Unternehmen ableiten kannst.
 				[VENDOR] = Das Unternehmen, welches direkt oder als Vertreter eines Dritten für das Projekt jemanden sucht
 				[PUBLISHEDAT] = Das Datum an dem die Projektbeschreibung veröffentlicht wurde
@@ -44,7 +44,9 @@ func (ps ProjectService) CreateProjectRequestFromText(text string) (model.Projec
 		case 1:
 			projectRequest.Description = text
 		case 2:
-			projectRequest.DurationInMonth, err = strconv.Atoi(text)
+			if text != "NOT FOUND" {
+				projectRequest.DurationInMonth, err = strconv.Atoi(text)
+			}
 		case 3:
 			projectRequest.Industry = text
 		case 4:
