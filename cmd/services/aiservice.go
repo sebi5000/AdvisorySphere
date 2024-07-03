@@ -12,7 +12,7 @@ type AIService struct {
 }
 
 func (aiService AIService) SendPromptedRequest(preprompt string, task string) (string, error) {
-	os.Setenv("OPENAIKEY", "sk-proj-jRLDS3vJqjEbSeblxBx7T3BlbkFJ9szkvbwGk3Zl6HYxCep1")
+
 	apiKey := os.Getenv("OPENAIKEY")
 
 	if len(apiKey) == 0 {
