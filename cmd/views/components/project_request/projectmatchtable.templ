@@ -11,7 +11,7 @@ templ ProjectMatchTable(matches []model.Match) {
             return document.getElementById("description").value;
         }
     </script>
-    <table class="striped">
+    <table class="table is-striped is-fullwidth">
         <thead>
             <tr>
             <th scope="col"></th>
@@ -30,17 +30,23 @@ templ ProjectMatchTable(matches []model.Match) {
                                 <input name="peopleNumber" type="hidden" value={match.People.Id} />
                                 <input name="corr_description" type="hidden" :value="description" />
                             </div>
-                            <div class="grid" role="group"> 
-                                <button hx-get="/showExternalProfile" hx-target="#externalProfile" :disabled="inProgress">
-                                    <span class="fa-solid fa-eye" />
-                                </button>
-                                <button hx-get="/aigenerateProfile" hx-target="#externalProfile" :aria-busy="inProgress"
-                                        @click="description = getDescription(); inProgress = true" @onAIBeautifyCompleted.window="inProgress = false" :disabled="inProgress">
-                                    <span class="fa-solid fa-wand-magic-sparkles" />
-                                </button>
-                                <button hx-get="/downloadExternalProfile" hx-swap="none" :disabled="inProgress">
-                                    <span class="fa-solid fa-download" />
-                                </button>
+                            <div class="columns">
+                                <div class="column"> 
+                                    <button class="button" hx-get="/showExternalProfile" hx-target="#externalProfile" :disabled="inProgress">
+                                        <span class="fa-solid fa-eye" />
+                                    </button>
+                                </div>
+                                <div class="column"> 
+                                    <button class="button" hx-get="/aigenerateProfile" hx-target="#externalProfile" :aria-busy="inProgress"
+                                            @click="description = getDescription(); inProgress = true" @onAIBeautifyCompleted.window="inProgress = false" :disabled="inProgress">
+                                        <span class="fa-solid fa-wand-magic-sparkles" />
+                                    </button>
+                                </div>
+                                <div class="column"> 
+                                    <button class="button" hx-get="/downloadExternalProfile" hx-swap="none" :disabled="inProgress">
+                                        <span class="fa-solid fa-download" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </th>

@@ -4,48 +4,46 @@ import "sphere/cmd/model"
 import "strconv"
 
 templ ExternalProfile(profile model.Profile) {
-    <div>
-        <div class="row">
-            <div class="col-xs">
-                <img src={ profile.People.PicturePath } width="200"/>
-            </div>
-            <div class="col-lg">
-                <b>{ profile.People.Name }</b>
-                <p><small>{ profile.People.Role }</small></p>
-                <p>{ profile.People.Bio }</p>
-                <blockquote>
-                    { profile.CustomerVoice.Voice }
-                <footer><cite>- { profile.CustomerVoice.Contact } von { profile.CustomerVoice.Company }</cite></footer>
-                </blockquote>
-            </div>
-            <div class="col-lg">
-                <b>Ausgewählte Projekte:</b>
+    <div class="columns">
+        <div class="column is-one-quarter">
+            <img src={ profile.People.PicturePath } width="200"/>
+        </div>
+        <div class="column content is-two-quarter">
+            <b>{ profile.People.Name }</b>
+            <p><small>{ profile.People.Role }</small></p>
+            
+            <p>{ profile.People.Bio }</p>
+            <blockquote>
+                { profile.CustomerVoice.Voice }
+            </blockquote>
+        </div>
+        <div class="column is-two-quarter">
+            <b>Ausgewählte Projekte:</b>
 
-                for _, project := range profile.Projects {
-                    <p>{ project.Industry } - { strconv.Itoa(project.DurationMonth) } Monate - { project.Title } </p> 
-                    <p>{ project.Description }</p>
-                    <hr>
+            for _, project := range profile.Projects {
+                <p>{ project.Industry } - { strconv.Itoa(project.DurationMonth) } Monate - { project.Title } </p> 
+                <p>{ project.Description }</p>
+                <hr>
+            }
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column is-one-quarter">
+            <b>Zertifizierungen:</b>                
+            <ul>
+                for _, certificate := range profile.Certificates {
+                    <li>{ certificate.Name }</li>
                 }
-            </div>
+            </ul>
         </div>
-        <div class="row">
-            <div class="col-xs">
-                <b>Zertifizierungen:</b>                
-                <ul>
-                    for _, certificate := range profile.Certificates {
-                        <li>{ certificate.Name }</li>
-                    }
-                </ul>
-            </div>
-            <div class="col-lg">
-                <b>Spezialisierung:</b>
-                <ul>
-                    for _, specialKnowledge := range profile.SpecialKnowledges {
-                        <li>{ specialKnowledge.Name }</li>
-                    }
-                </ul>
-            </div>
-            <div class="col-lg" />
+        <div class="column is-two-quarter">
+            <b>Spezialisierung:</b>
+            <ul>
+                for _, specialKnowledge := range profile.SpecialKnowledges {
+                    <li>{ specialKnowledge.Name }</li>
+                }
+            </ul>
         </div>
+        <div class="column is-two-quarter" />
     </div>
 }
