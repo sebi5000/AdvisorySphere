@@ -91,6 +91,8 @@ func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 
 func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 
+	htmxService := htmx.NewService(w)
+
 	peopleNumber := r.URL.Query().Get("peopleNumber")
 
 	var ps services.ProfileService
@@ -98,7 +100,11 @@ func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 	err := ps.Download(profile)
 
 	if err != nil {
-		//status := status.Danger(err.Error())
-		//status.SetHXTriggerHeader(w)
+		status := status.Danger(err.Error())
+		htmxService.AddEvent(htmx.Event{Name: "onstatuschanged", Param: status})
+		return
 	}
+
+	statusOk := status.Success("download successfull")
+	htmxService.AddEvent(htmx.Event{Name: "onstatuschanged", Param: statusOk})
 }

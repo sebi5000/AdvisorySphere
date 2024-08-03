@@ -6,70 +6,53 @@ import (
 )
 
 templ ExternalProfilePDF(profile model.Profile) {
-    <html>
+    <html lang="de">
         <head>
-            <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+            <meta charset="utf-8" />
+            <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css"/>
             <style>
-                p { font-size: 11px }                
+                p { font-size: 11px }
                 b { font-size: 14px }
                 li { font-size: 11px }
                 small { font-size: 10px }
-
                 ul { margin: 0px; }
-
-                .grid-container {
-                    display: grid;
-                    grid-template-columns: 0.5fr 1.25fr 1.25fr;
-                }
-                .grid-col-1{
-                    grid-column: 1;
-                }
-                .grid-col-2{
-                    grid-column: 2;
-                }
-                .grid-col-3{
-                    grid-column: 3;
-                }
             </style>
         </head>
         <body>
-            <div class="grid-container">
-                <div class="grid-col-1">
-                    <img src={ profile.People.PicturePath } width="150"/>
-                </div>
-                <div class="grid-col-2">
-                    <b>{ profile.People.Name }</b>
-                    <p><small>{ profile.People.Role }</small></p>
-                    <p>{ profile.People.Bio }</p>
-                    
-                    <blockquote>
-                        <p>{ profile.CustomerVoice.Voice }</p>
-                    <footer><small><cite>- { profile.CustomerVoice.Contact } von { profile.CustomerVoice.Company }</cite></small></footer>
-                    </blockquote>
-
-                    <b>Zertifizierungen:</b>                
-                    <ul>
-                    for _, certificate := range profile.Certificates {
-                        <li>{ certificate.Name }</li>
-                    }
+            <div class="fixed-grid has-3-cols">
+                <div class="grid is-gap-5">
+                    <div class="cell">
+                        <img src={ profile.People.PicturePath } width="200"/> 
+                        <b>Zertifizierungen:</b>                
+                        <ul>
+                            for _, certificate := range profile.Certificates {
+                                <li>{ certificate.Name }</li>
+                            }
                     </ul>
-                </div>
-                <div class="grid-col-3">
-                    <b>Ausgewählt Projekte:</b>
+                    </div>
+                    <div class="cell"> 
+                        <b>{ profile.People.Name }</b>
+                        <p><small>{ profile.People.Role }</small></p>
+                        <p>{ profile.People.Bio }</p>
+                        <blockquote>
+                            <p>{ profile.CustomerVoice.Voice }</p>
+                        </blockquote>
 
-                    for _, project := range profile.Projects {
-                        <p>{ project.Industry } - { strconv.Itoa(project.DurationMonth) } Monate</p>
-                        <p>{ project.Title }</p>
-                        <p><small>{ project.Description }</small></p>
-                        <hr>
-                    }
-
-                    <b>Spezialisierung:</b>
-                    <ul>
-                        for _, specialKnowledge := range profile.SpecialKnowledges {
-                            <li>{ specialKnowledge.Name }</li>
+                        <b>Spezialisierung:</b>
+                        <ul>
+                            for _, specialKnowledge := range profile.SpecialKnowledges {
+                                <li>{ specialKnowledge.Name }</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="cell">
+                        <b>Ausgewählte Projekte:</b>
+                        for _, project := range profile.Projects {
+                            <p>{ project.Industry } - { strconv.Itoa(project.DurationMonth) } Monate - { project.Title } </p> 
+                            <p>{ project.Description }</p>
+                            <hr>
                         }
-                    </ul>
+                    </div>
                 </div>
             </div>
         </body>

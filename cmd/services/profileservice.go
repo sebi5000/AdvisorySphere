@@ -20,7 +20,7 @@ func (ps ProfileService) GetProfile(peopleNumber string) model.Profile {
 	employee.Id = "12345"
 	employee.Name = "Max Mustermann"
 	employee.Role = "SAP Senior Consultant"
-	employee.PicturePath = "https://source.unsplash.com/schwarzer-hund-tragt-blaues-jeanshalsband-K4mSJ7kc0As"
+	employee.PicturePath = "https://gravatar.com/avatar/0?d=wavatar"
 	employee.Bio = `Max Mustermann hat sein Studium der Wirtschaftsinformatik 2015 mit dem Master beendet und berät seit diesem Zeitpunkt
 	seine Kunden im Umfeld von Salesforce. Max hat maßgeblich die Digitalisierung im deutschen Mittelstand vorangetrieben
 	und in den letzten Jahren zahlreiche Kunden mit Hauptsitz in Deutschland bei internationalen Rollouts beraten und begleitet.`
@@ -165,14 +165,7 @@ func (ps ProfileService) profileAsGrotenbergRequest(profile model.Profile) (*got
 		return req, err
 	}
 
-	//picoStyle, err := gotenberg.NewDocumentFromPath("picostyle.css", "/Users/sebastianessling/Documents/AdvisorySphere/assets/pico.min.css")
-
-	if err != nil {
-		return req, err
-	}
-
 	req = gotenberg.NewHTMLRequest(profilePDF)
-	//req.Assets(picoStyle)
 	req.PaperSize(gotenberg.PaperDimensions{5.625, 10, gotenberg.IN}) //16:9 Ratio like Powerpoint
 	req.Landscape(true)
 	req.Margins(gotenberg.PageMargins{0.2, 0.2, 0.2, 0.2, gotenberg.IN})
