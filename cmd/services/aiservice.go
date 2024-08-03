@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 	"errors"
-	"os"
+	"sphere/cmd/model/security"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -13,7 +13,7 @@ type AIService struct {
 
 func (aiService AIService) SendPromptedRequest(preprompt string, task string) (string, error) {
 
-	apiKey := os.Getenv("OPENAIKEY")
+	apiKey := security.GetInstance().OPENAIKEY
 
 	if len(apiKey) == 0 {
 		return "", errors.New("please set api-key for using ai features")

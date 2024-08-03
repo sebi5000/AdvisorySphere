@@ -2,11 +2,21 @@ package main
 
 import (
 	"net/http"
+	"os"
+	"sphere/cmd/model/security"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	godotenv.Load()
+	var secrets = security.GetInstance()
+	secrets.SUPABASE_URL = os.Getenv("SUPABASE_URL")
+	secrets.SUPABASE_KEY = os.Getenv("SUPABASE_KEY")
+	secrets.OPENAIKEY = os.Getenv("OPENAIKEY")
+
 	router := chi.NewRouter()
 	router.Get("/", indexHandler)
 	router.Get("/showExternalProfile", showExternalProfileHandler)

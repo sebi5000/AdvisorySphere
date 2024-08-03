@@ -2,11 +2,14 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"sphere/cmd/model"
+	"sphere/cmd/model/security"
 	"sphere/cmd/views/components/external_profile"
 	"strings"
 
 	"github.com/dcaraxes/gotenberg-go-client/v8"
+	"github.com/supabase-community/supabase-go"
 )
 
 type ProfileService struct {
@@ -15,6 +18,22 @@ type ProfileService struct {
 func (ps ProfileService) GetProfile(peopleNumber string) model.Profile {
 
 	var profile model.Profile
+
+	client, err := supabase.NewClient(security.GetInstance().SUPABASE_URL, security.GetInstance().SUPABASE_KEY, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	data, count, err := client.From("consultants").Select("*", "exact", false).Execute()
+
+	if count > 0 {
+		_ = data
+	}
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	var employee model.People
 	employee.Id = "12345"
