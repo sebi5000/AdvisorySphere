@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"sphere/cmd/model"
 	"sphere/cmd/model/security"
 	"sphere/cmd/views/components/external_profile"
@@ -15,80 +15,75 @@ import (
 type ProfileService struct {
 }
 
-func (ps ProfileService) GetProfile(peopleNumber string) model.Profile {
+func (ps ProfileService) GetProfile(peopleNumber string) (model.Profile, error) {
 
 	var profile model.Profile
+	var dbProfile []model.DbProfile
 
 	client, err := supabase.NewClient(security.GetInstance().SUPABASE_URL, security.GetInstance().SUPABASE_KEY, nil)
 
 	if err != nil {
-		fmt.Println(err.Error())
+		return profile, err
 	}
 
-	data, count, err := client.From("consultants").Select("*", "exact", false).Execute()
+	//Read Consultant Profile from Database
+	//TODO: Filter based on peopleNumber
+	data, count, err := client.From("consultant_profile").Select("*", "exact", false).Execute()
 
+	//Check if data exists
 	if count > 0 {
-		_ = data
+		if err == nil {
+			err = json.Unmarshal(data, &dbProfile)
+		}
 	}
 
+	//If error occurs while access database return error
 	if err != nil {
-		fmt.Println(err.Error())
+		return profile, err
 	}
 
-	var employee model.People
-	employee.Id = "12345"
-	employee.Name = "Max Mustermann"
-	employee.Role = "SAP Senior Consultant"
-	employee.PicturePath = "https://gravatar.com/avatar/0?d=wavatar"
-	employee.Bio = `Max Mustermann hat sein Studium der Wirtschaftsinformatik 2015 mit dem Master beendet und berät seit diesem Zeitpunkt
-	seine Kunden im Umfeld von Salesforce. Max hat maßgeblich die Digitalisierung im deutschen Mittelstand vorangetrieben
-	und in den letzten Jahren zahlreiche Kunden mit Hauptsitz in Deutschland bei internationalen Rollouts beraten und begleitet.`
+	for i, profileRecord := range dbProfile {
 
-	profile.People = employee
+		//Basis consultant information are same for every db record. We only need to fetch them once.
+		if i == 1 {
+			//Add basis consultant information
+			var consultant model.People
+			consultant.Id = profileRecord.Id
+			consultant.Name = profileRecord.FirstName + ` ` + profileRecord.LastName
+			consultant.Role = profileRecord.Role
+			consultant.PicturePath = "https://gravatar.com/avatar/0?d=wavatar"
+			consultant.Bio = profileRecord.Bio
 
-	var customerVoice model.CustomerVoice
-	customerVoice.Company = "Musterfirma GmbH"
-	customerVoice.Contact = "Rene Rakete"
-	customerVoice.Voice = "Max hat uns mit seiner Performance wirklich vorangebracht. Neben bester Qualität, hat es vor allem menschlich sofort gepasst."
+			profile.People = consultant
 
-	profile.CustomerVoice = customerVoice
+			//Add customer voice
+			var customerVoice model.CustomerVoice
+			customerVoice.Reference = profileRecord.CustomerReference
+			customerVoice.Voice = profileRecord.CustomerVoice
+			profile.CustomerVoice = customerVoice
+		}
 
-	var cert model.Certificate
-	cert.Name = "Salesforce Administrator"
+		//Add special knowledge
+		var specialKnowledge model.SpecialKnowledge
+		specialKnowledge.Name = profileRecord.SpecialKnowledge
+		ps.addSpecialKnowledgeUnique(specialKnowledge, &profile.SpecialKnowledges)
 
-	var cert2 model.Certificate
-	cert2.Name = "Salesforce Sales Cloud Consultant"
+		//Add projects
+		var project model.Project
+		project.Industry = profileRecord.ProjectIndustry
+		project.DurationMonth = profileRecord.ProjectDurationMonth
+		project.Title = profileRecord.ProjectTitle
+		project.ShortDescription = profileRecord.ProjectDescription
+		project.Description = profileRecord.ProjectDescription
+		ps.addProjectUnique(project, &profile.Projects)
 
-	var cert3 model.Certificate
-	cert3.Name = "Salesforce AI Practioner"
+		//Add certifications
+		var cert model.Certificate
+		cert.Name = profileRecord.Certificate
+		ps.addCertificateUnique(cert, &profile.Certificates)
+	}
 
-	profile.Certificates = append(profile.Certificates, cert, cert2, cert3)
-
-	var sk model.SpecialKnowledge
-	sk.Name = "Sales Cloud"
-
-	var sk2 model.SpecialKnowledge
-	sk2.Name = "Business Analyse und Prozessdesign"
-
-	profile.SpecialKnowledges = append(profile.SpecialKnowledges, sk, sk2)
-
-	var project model.Project
-	project.Industry = "Chemieindustrie"
-	project.DurationMonth = 12
-	project.Title = "Einführung Salesforce Sales Cloud"
-	project.ShortDescription = "Hier steht eine Beschreibung des Projektinhaltes, welche durchaus mehrere Zeilen haben kann und die Tätigkeiten während des Projektes beschreibt."
-	project.Description = "Hier steht eine Beschreibung des Projektinhaltes, welche durchaus mehrere Zeilen haben kann und die Tätigkeiten während des Projektes beschreibt."
-
-	var project2 model.Project
-	project2.Industry = "Retail"
-	project2.DurationMonth = 18
-	project2.Title = "Integration Salesforce & SAP"
-	project2.ShortDescription = "Hier steht eine Beschreibung des Projektinhaltes, welche durchaus mehrere Zeilen haben kann und die Tätigkeiten während des Projektes beschreibt."
-	project2.Description = "Hier steht eine Beschreibung des Projektinhaltes, welche durchaus mehrere Zeilen haben kann und die Tätigkeiten während des Projektes beschreibt."
-
-	profile.Projects = append(profile.Projects, project, project2)
-
-	return profile
+	return profile, err
 }
 
 func (ps ProfileService) GetProfilePDF(peopleNumber string) ([]byte, error) {
@@ -96,7 +91,12 @@ func (ps ProfileService) GetProfilePDF(peopleNumber string) ([]byte, error) {
 	var pdfDocument []byte
 	gclient := &gotenberg.Client{Hostname: "http://localhost:3000"}
 
-	profile := ps.GetProfile(peopleNumber)
+	profile, err := ps.GetProfile(peopleNumber)
+
+	if err != nil {
+		return pdfDocument, err
+	}
+
 	req, err := ps.profileAsGrotenbergRequest(profile)
 
 	if err != nil {
@@ -191,4 +191,56 @@ func (ps ProfileService) profileAsGrotenbergRequest(profile model.Profile) (*got
 	req.SkipNetworkIdleEvent()
 
 	return req, err
+}
+
+func (ps ProfileService) addProjectUnique(project model.Project, projects *[]model.Project) {
+
+	var exists = false
+
+	for _, existingProject := range *projects {
+		exists = existingProject.Title == project.Title
+		if exists {
+			break
+		}
+	}
+
+	if !exists {
+		*projects = append(*projects, project)
+	}
+}
+
+func (ps ProfileService) addSpecialKnowledgeUnique(sk model.SpecialKnowledge, specials *[]model.SpecialKnowledge) {
+
+	var exists = false
+
+	for _, existingSpecial := range *specials {
+
+		exists = existingSpecial.Name == sk.Name
+
+		if exists {
+			break
+		}
+	}
+
+	if !exists {
+		*specials = append(*specials, sk)
+	}
+}
+
+func (ps ProfileService) addCertificateUnique(cert model.Certificate, certificates *[]model.Certificate) {
+
+	var exists = false
+
+	for _, existingCertificate := range *certificates {
+
+		exists = existingCertificate.Name == cert.Name
+
+		if exists {
+			break
+		}
+	}
+
+	if !exists {
+		*certificates = append(*certificates, cert)
+	}
 }

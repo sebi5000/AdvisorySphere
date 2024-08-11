@@ -50,10 +50,19 @@ func clearHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func showExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
+
 	peopleNumber := r.URL.Query().Get("peopleNumber")
 
 	var ps services.ProfileService
-	profile := ps.GetProfile(peopleNumber)
+
+	htmxService := htmx.NewService(w)
+	profile, err := ps.GetProfile(peopleNumber)
+
+	if err != nil {
+		status := status.Danger(err.Error())
+		htmxService.AddEvent(htmx.Event{Name: "onstatuschanged", Param: status})
+		return
+	}
 
 	templ.Handler(external_profile.ExternalProfile(profile)).ServeHTTP(w, r)
 }
@@ -76,7 +85,13 @@ func aibeautifyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var ps services.ProfileService
-	profile := ps.GetProfile(peopleNumber)
+	profile, err := ps.GetProfile(peopleNumber)
+
+	if err != nil {
+		status := status.Danger(err.Error())
+		htmxService.AddEvent(htmx.Event{Name: "onstatuschanged", Param: status})
+		return
+	}
 
 	err = ps.AIBeautify(request, &profile)
 
@@ -96,8 +111,15 @@ func downloadExternalProfileHandler(w http.ResponseWriter, r *http.Request) {
 	peopleNumber := r.URL.Query().Get("peopleNumber")
 
 	var ps services.ProfileService
-	profile := ps.GetProfile(peopleNumber)
-	err := ps.Download(profile)
+	profile, err := ps.GetProfile(peopleNumber)
+
+	if err != nil {
+		status := status.Danger(err.Error())
+		htmxService.AddEvent(htmx.Event{Name: "onstatuschanged", Param: status})
+		return
+	}
+
+	err = ps.Download(profile)
 
 	if err != nil {
 		status := status.Danger(err.Error())
